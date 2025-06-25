@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Идеальный движок для крестиков-ноликов</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+  /* Сброс */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at center, #0f0c29, #302b63, #141429);
+    font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ff009d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 15px 40px;
+    user-select: none;
+  }
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 0.15em;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #c6fffd;
+    text-shadow:
+      0 0 8px #00fff7,
+      0 0 20px #00fff7,
+      0 0 30px #00fff7,
+      0 0 40px #00fff7;
+  }
+
+  p.emphasis {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: #c6fffd;
+    margin-top: 0;
+    margin-bottom: 35px;
+    text-shadow: 0 0 8px #00e0d9cc;
+  }
+
+  section {
+    background: rgba(10, 10, 30, 0.55);
+    border-radius: 20px;
+    padding: 25px 35px;
+    margin-bottom: 35px;
+    width: 100%;
+    max-width: 620px;
+    box-shadow:
+      0 0 15px #00fff7aa,
+      inset 0 0 20px #00fff7cc;
+    backdrop-filter: blur(18px);
+    border: 1.5px solid #00fff7aa;
+  }
+
+  section h2 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #c6fffd;
+    text-shadow:
+      0 0 12px #00fff7,
+      0 0 20px #00fff7;
+    border-bottom: 2px solid #00fff7cc;
+    padding-bottom: 6px;
+    letter-spacing: 0.06em;
+  }
+
+  section h3 {
+    margin-top: 1.4em;
+    margin-bottom: 0.5em;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #c6fffd;
+    text-shadow:
+      0 0 8px #00fff7,
+      0 0 15px #00fff7;
+  }
+  section ul {
+    margin-top: 0;
+    margin-bottom: 1em;
+    padding-left: 1.3em;
+    color: #ff009d;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  section ul li {
+    margin-bottom: 0.5em;
+  }
+
+  /* Новая секция с изображением */
+  #image-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    padding-bottom: 50px;
+  }
+  #image-section h2 {
+    margin-bottom: 30px;
+    font-weight: 700;
+    color: #c6fffd;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-shadow:
+      0 0 10px #00fff7,
+      0 0 20px #00fff7;
+  }
+  #image-section img {
+    max-width: 400px;  /* уменьшенный размер */
+    width: 100%;
+    height: auto;
+    border-radius: 18px;
+    border: 3.5px solid #00fff7cc;
+    box-shadow:
+      0 0 25px #00fff7aa,
+      inset 0 0 40px #00fff7bb;
+    transition: transform 0.3s ease;
+  }
+  #image-section img:hover,
+  #image-section img:focus {
+    outline: none;
+    transform: scale(1.05);
+    box-shadow:
+      0 0 45px #00fff7ee,
+      inset 0 0 60px #00fff7ff;
+  }
+
+  /* Секция с кнопкой скачивания */
+  #download-section {
+    text-align: center;
+    margin-bottom: 35px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  #download-section button {
+    background: linear-gradient(170deg, #00fff7, #8f0086);
+    border: none;
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    padding: 16px 48px;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow:
+      0 0 8px #c6fffd,
+      0 0 45px #00fff7;
+    transition:
+      background 0.4s ease,
+      box-shadow 0.4s ease,
+      transform 0.15s ease;
+    user-select: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'Orbitron', sans-serif;
+  }
+  #download-section button:hover,
+  #download-section button:focus-visible {
+    background: linear-gradient(180deg, #ffffff, #9eefeb);
+    color:#ff009d;
+    box-shadow:
+      0 0 50px #ff009d;
+    transform: scale(1.08);
+    outline: none;
+  }
+  #download-section button:active {
+    transform: scale(0.95);
+  }
+
+  /* Игровое поле */
+  #board {
+    display: grid;
+    grid-template-columns: repeat(3, 110px);
+    grid-template-rows: repeat(3, 110px);
+    gap: 14px;
+    justify-content: center;
+    margin-top: 50px;
+    margin-bottom: 25px;
+  }
+
+  .cell {
+    background: rgba(99, 2, 255, 0.12);
+    border-radius: 22px;
+    box-shadow:
+      0 0 12px #00fff7,
+      inset 0 0 18px #00fff7,
+      inset 0 0 30px #008f8c;
+    font-size: 4.5rem;
+    color: #00fff7;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    transition:
+      box-shadow 0.25s ease,
+      transform 0.15s ease,
+      color 0.3s ease;
+    position: relative;
+  }
+  .cell:hover:not(.disabled) {
+    box-shadow:
+      0 0 28px #00fff7,
+      inset 0 0 40px #00fff7,
+      inset 0 0 60px #00e0d9;
+    color: #ffffff;
+    transform: scale(1.1);
+    z-index: 2;
+  }
+  .cell.disabled {
+    cursor: default;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .cell:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 40px #00fff7,
+      inset 0 0 50px #00fff7,
+      0 0 12px 4px #00fff7aa;
+    transform: scale(1.1);
+    z-index: 2;
+  }
+
+  /* Неоновые символы с подсветкой */
+  .cell.x {
+    text-shadow:
+      0 0 8px #ff009d,
+      0 0 20px #ff009d,
+      0 0 30px #ff009d,
+      0 0 40px #ff009d;
+    color: #ffffff;
+  }
+  .cell.o {
+    text-shadow:
+      0 0 8px #005eff,
+      0 0 20px #005eff,
+      0 0 30px #005eff,
+      0 0 40px #005eff;
+    color: #ffffff;
+  }
+
+  /* Результат */
+  #result {
+    font-size: 1.7rem;
+    font-weight: 700;
+    min-height: 2.5em;
+    color: #c6fffd;
+    text-align: center;
+    text-shadow:
+      0 0 10px #00fff7,
+      0 0 25px #00fff7;
+    margin-bottom: 25px;
+    user-select: text;
+  }
+
+  /* Кнопка */
+  button#restart {
+    display: block;
+    margin: 0 auto 25px;
+    background: linear-gradient(170deg, #00fff7, #8f0086);
+    border: none;
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 700;
+    padding: 14px 40px;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow:
+      0 0 5px #c6fffd,
+      0 0 40px #00fff7;
+    transition:
+      background 0.4s ease,
+      box-shadow 0.4s ease,
+      transform 0.15s ease;
+    user-select: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  button#restart:hover {
+    background: linear-gradient(180deg, #ffffff, #9eefeb);
+    color:#ff009d;
+    box-shadow:
+      0 0 60px #ff009d;
+    transform: scale(1.05);
+  }
+  button#restart:active {
+    transform: scale(0.95);
+  }
+
+  /* Ссылки */
+  a {
+    color: #00fff7;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s;
+  }
+  a:hover,
+  a:focus-visible {
+    color: #00e0d9;
+    text-decoration: underline;
+  }
+
+  /* Футер */
+  footer {
+    margin-top: auto;
+    padding-top: 12px;
+    font-size: 0.9rem;
+    color: #00fff7cc;
+    text-align: center;
+    width: 100%;
+    max-width: 620px;
+    letter-spacing: 0.04em;
+  }
+
+  /* Адаптив */
+  @media (max-width: 600px) {
+    #board {
+      grid-template-columns: repeat(3, 90px);
+      grid-template-rows: repeat(3, 90px);
+      gap: 12px;
+    }
+    .cell {
+      font-size: 3.8rem;
+      border-radius: 18px;
+    }
+    button#restart {
+      padding: 13px 32px;
+      font-size: 1.15rem;
+    }
+    #download-section button {
+      font-size: 1.2rem;
+      padding: 14px 38px;
+    }
+    section {
+      padding: 20px 25px;
+      max-width: 100%;
+    }
+    h1 {
+      font-size: 2.4rem;
+    }
+    p.emphasis {
+      font-size: 1.1rem;
+    }
+  }
+
+  @media (max-width: 400px) {
+    #board {
+      grid-template-columns: repeat(3, 70px);
+      grid-template-rows: repeat(3, 70px);
+      gap: 10px;
+    }
+    .cell {
+      font-size: 2.8rem;
+      border-radius: 14px;
+    }
+    button#restart {
+      padding: 11px 26px;
+      font-size: 1rem;
+    }
+    #download-section button {
+      font-size: 1rem;
+      padding: 12px 30px;
+    }
+    h1 {
+      font-size: 1.9rem;
+    }
+    p.emphasis {
+      font-size: 0.95rem;
+    }
+  }
+
+  /* Добавлено для выделения strong бирюзовым с неоновым свечением */
+  strong {
+    color: #00fff7;
+
+  }
+</style>
+</head>
+<body>
+
+<h1>Идеальный движок для крестиков-ноликов</h1>
+<p class="emphasis">"Невозможно победить — только ничья или победа ИИ"</p>
+
+<section>
+  <h2>О проекте</h2>
+  <p><strong>«Киберпанк ХО»</strong> — это настольное приложение для игры в крестики-нолики с футуристическим неоновым дизайном, реализованное на Python с использованием библиотеки Tkinter для графического интерфейса. Игра предлагает пользователю выбрать символ (X или O) и сразиться с интеллектуальным ИИ-компьютером.</p>
+</section>
+
+<section id="game">
+  <h2>Пример игрового движка</h2>
+  <div id="board" aria-label="Игровое поле крестики-нолики" role="grid"></div>
+  <div id="result" role="alert" aria-live="polite"></div>
+  <button id="restart" aria-label="Начать новую игру">Начать новую игру</button>
+</section>
+
+<section>
+  <h2>Описание функций</h2>
+  <h3>Основные функции программы</h3>
+  <ul>
+    <li><strong>Графический интерфейс пользователя (GUI)</strong>: интерактивное игровое поле, выбор символа, управление игрой и отображение статистики.</li>
+    <li><strong>Игровая логика</strong>: обработка ходов, проверка победы, ничьи, запрет на ходы в занятые клетки.</li>
+    <li><strong>Искусственный интеллект (ИИ)</strong>: стратегия, гарантирующая невозможность победы над ИИ, с приоритетом выигрыша, блокировки и выбора центра или углов.</li>
+    <li><strong>Хранение и управление данными</strong>: использование SQLite для сохранения истории игр и статистики.</li>
+    <li><strong>Управление жизненным циклом приложения</strong>: центрирование окна, обработка событий и сохранение данных.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Технические детали</h2>
+  <h3>Обоснование выбора технологий</h3>
+  <ul>
+    <li><strong>Python</strong>: простой и мощный язык для реализации логики и ИИ.</li>
+    <li><strong>Tkinter</strong>: встроенная библиотека Python для кроссплатформенного GUI без дополнительных зависимостей.</li>
+    <li><strong>SQLite</strong>: встроенная база данных для надежного хранения статистики.</li>
+    <li><strong>functools.partial</strong>: удобство обработки событий.</li>
+  </ul>
+</section><section>
+  <h2>Выводы по проделанной работе</h2>
+  <ul>
+    <li>Реализован удобный графический интерфейс для игры.</li>
+    <li>Создан идеальный ИИ, который невозможно победить.</li>
+    <li>Обеспечено хранение статистики в базе данных.</li>
+    <li>Выбранные технологии оптимальны для задачи.</li>
+    <li>Проект служит отличной учебной платформой для изучения ИИ, GUI и баз данных.</li>
+  </ul>
+</section>
+
+<!-- Перенесённые секции вниз -->
+
+<section id="image-section" aria-label="Изображение игры крестики-нолики">
+  <h2>Скриншот игры</h2>
+  <img src="image/screen.png" alt="Идеальный движок для крестиков-ноликов: пример игрового поля с неоновым дизайном" tabindex="0" />
+</section>
+
+<section id="download-section" aria-label="Секция скачивания приложения">
+  <button id="download-btn" aria-label="Скачать приложение крестики-нолики">Скачать приложение</button>
+</section>
+
+<footer>
+  <p>Автор: Kiselnikova Ksenia | <a href="#" target="_blank" rel="noopener noreferrer">Репозиторий на GitHub</a></p>
+</footer>
+
+<script>
+  const human = 'X';
+  const ai = 'O';
+  let board = Array(9).fill(null);
+  const boardElement = document.getElementById('board');
+  const resultElement = document.getElementById('result');
+  const restartBtn = document.getElementById('restart');
+  const downloadBtn = document.getElementById('download-btn');
+
+  function renderBoard() {
+    boardElement.innerHTML = '';
+    board.forEach((cell, idx) => {
+      const cellDiv = document.createElement('div');
+      cellDiv.classList.add('cell');
+      if (cell) {
+        cellDiv.textContent = cell;
+        cellDiv.classList.add(cell.toLowerCase());
+      }
+      if (checkWinner(board) || board[idx]) {
+        cellDiv.classList.add('disabled');
+      }
+      cellDiv.setAttribute('role', 'gridcell');
+      cellDiv.setAttribute('tabindex', cell ? '-1' : '0');
+      cellDiv.addEventListener('click', () => humanMove(idx));
+      cellDiv.addEventListener('keydown', e => {
+        if ((e.key === 'Enter' || e.key === ' ') && !board[idx] && !checkWinner(board)) {
+          humanMove(idx);
+          e.preventDefault();
+        }
+      });
+      boardElement.appendChild(cellDiv);
+    });
+  }
+
+  function humanMove(idx) {
+    if (board[idx] || checkWinner(board)) return;
+    board[idx] = human;
+    renderBoard();
+    if (checkWinner(board)) {
+      endGame();
+      return;
+    }
+    if (board.every(Boolean)) {
+      endGame();
+      return;
+    }
+    setTimeout(() => {
+      aiMove();
+    }, 350);
+  }
+
+  function aiMove() {
+    const bestMove = minimax(board, ai).index;
+    board[bestMove] = ai;
+    renderBoard();
+    if (checkWinner(board)) {
+      endGame();
+      return;
+    }
+    if (board.every(Boolean)) {
+      endGame();
+      return;
+    }
+  }
+
+  function checkWinner(bd) {
+    const winCombos = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+    for (let combo of winCombos) {
+      const [a,b,c] = combo;
+      if (bd[a] && bd[a] === bd[b] && bd[a] === bd[c]) {
+        return bd[a];
+      }
+    }
+    return null;
+  }
+
+  function endGame() {
+    const winner = checkWinner(board);
+    if (winner === human) {
+      resultElement.textContent = 'Поздравляем! Вы выиграли! (но это невозможно 😉)';
+    } else if (winner === ai) {
+      resultElement.textContent = 'ИИ выиграл. Попробуйте снова!';
+    } else {
+      resultElement.textContent = 'Ничья!';
+    }
+  }
+
+  function minimax(newBoard, player) {
+    const availSpots = newBoard.map((v,i) => v ? null : i).filter(v => v !== null);
+
+    const winner = checkWinner(newBoard);
+    if (winner === human) {
+      return {score: -10};
+    } else if (winner === ai) {
+      return {score: 10};
+    } else if (availSpots.length === 0) {
+      return {score: 0};
+    }
+
+    const moves = [];
+
+    for (let i = 0; i < availSpots.length; i++) {
+      const idx = availSpots[i];
+      const move = {};
+      move.index = idx;
+      newBoard[idx] = player;
+
+      if (player === ai) {
+        const result = minimax(newBoard, human);
+        move.score = result.score;
+      } else {
+        const result = minimax(newBoard, ai);
+        move.score = result.score;
+      }
+
+      newBoard[idx] = null;
+      moves.push(move);
+    }
+
+    let bestMove;
+    if (player === ai) {
+      let bestScore = -Infinity;
+      for (let i = 0; i < moves.length; i++) {
+        if (moves[i].score > bestScore) {
+          bestScore = moves[i].score;
+          bestMove = moves[i];
+        }
+      }
+    } else {
+      let bestScore = Infinity;
+      for (let i = 0; i < moves.length; i++) {
+        if (moves[i].score < bestScore) {
+          bestScore = moves[i].score;
+          bestMove = moves[i];
+        }
+      }
+    }
+    return bestMove;
+  }
+
+  restartBtn.addEventListener('click', () => {
+    board = Array(9).fill(null);
+    resultElement.textContent = '';
+    renderBoard();
+  });
+
+  // Обработчик кнопки скачивания
+  downloadBtn.addEventListener('click', () => {
+    // Пример: скачаем фиктивный файл (замените href на реальный путь)
+    const link = document.createElement('a');
+    link.href = '/downloads/Cyberpunk_XO.zip'; // Путь к вашему приложению
+    link.download = 'Cyberpunk_XO.zip';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+
+  renderBoard();
+</script>
+
+</body>
+</html>
+
